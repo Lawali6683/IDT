@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Creative Developing Company</title>
+    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        
+        :root {
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --danger: #ef4444;
+    --bg-light: #f3f4f6;
+    --card-bg: #ffffff;
+    --text-dark: #111827;
+    --text-light: #6b7280;
+    --border: #e5e7eb;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+
+body { background: var(--bg-light); color: var(--text-dark); overflow-x: hidden; }
+
+.hidden { display: none !important; }
+
+/* 🔐 Auth Styles */
+.auth-wrapper { height: 100vh; display: flex; align-items: center; justify-content: center; background: #1e293b; }
+.auth-card { background: var(--card-bg); padding: 40px; border-radius: 16px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+.auth-logo { width: 90px; margin-bottom: 15px;
+border-radius: 50%;
+}
+.auth-card h2 { margin-bottom: 10px; font-weight: 800; }
+.auth-card p { color: var(--text-light); margin-bottom: 25px; }
+
+.input-box { display: flex; align-items: center; background: #f9fafb; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 15px; padding: 0 15px; }
+.input-box i { color: var(--text-light); }
+.input-box input { width: 100%; padding: 12px; border: none; background: transparent; outline: none; font-size: 15px; }
+
+.btn-primary { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+.btn-primary:hover { background: var(--primary-hover); }
+
+/* 📊 Dashboard Wrapper */
+.dashboard-wrapper { display: flex; min-height: 100vh; }
+
+.sidebar { width: 280px; background: #0f172a; color: white; padding: 30px 20px; position: fixed; height: 100vh; display: flex; flex-direction: column; }
+.sidebar-header { text-align: center; margin-bottom: 35px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+.sidebar-header img { width: 70px; margin-bottom: 10px; }
+
+.stats-box { background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 25px; }
+.stats-box span { font-size: 13px; color: #9ca3af; }
+.stats-box h1 { font-size: 32px; font-weight: 800; color: white; }
+
+.btn-action { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; margin-bottom: 15px; }
+.btn-copy-all { background: var(--primary); color: white; }
+.btn-copy-all:hover { background: var(--primary-hover); }
+.btn-logout { margin-top: auto; background: transparent; color: #ef4444; border: 1px solid #ef4444; width: 100%; padding: 12px; border-radius: 8px; cursor: pointer; }
+
+/* Main Area */
+.main-content { flex: 1; margin-left: 280px; padding: 40px; }
+.top-header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 30px; }
+.banner-thumb { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; }
+
+/* Users Display Cards */
+.users-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 25px; }
+
+.user-card { background: var(--card-bg); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: 0.3s; }
+.user-card:hover { transform: translateY(-5px); }
+
+.card-top { padding: 20px; background: #fafafa; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 15px; }
+.card-img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); }
+.card-top h3 { font-size: 16px; font-weight: 700; }
+.id-badge { font-size: 12px; font-weight: 800; color: var(--primary); background: #e0e7ff; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-top: 5px; }
+
+.card-info { padding: 20px; }
+.data-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
+.data-item label { font-size: 12px; font-weight: 700; color: var(--text-light); }
+.data-item span { font-size: 14px; font-weight: 500; }
+
+.icon-copy { cursor: pointer; color: var(--primary); margin-left: 8px; font-size: 13px; }
+
+.accordian-box { margin-top: 15px; border-top: 2px dashed var(--border); padding-top: 15px; }
+.accordian-box summary { font-weight: 700; font-size: 14px; color: var(--primary); cursor: pointer; margin-bottom: 10px; }
+.accordian-box details p { font-size: 13px; color: #4b5563; margin-bottom: 8px; background: #f9fafb; padding: 8px; border-radius: 6px; }
+
+.card-footer { padding: 15px; background: #fff5f5; display: flex; justify-content: flex-end; }
+.btn-delete { background: var(--danger); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 13px; }
+
+/* Push Toasts */
+#notification-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+.toast { padding: 15px 25px; border-radius: 8px; color: white; font-weight: 600; margin-bottom: 10px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); animation: slideLeft 0.3s ease-out; }
+@keyframes slideLeft { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+.loader-box { text-align: center; padding: 100px 0; }
+.spinner { width: 45px; height: 45px; border: 4px solid #e5e7eb; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="notification-container"></div>
+
+    <div id="login-screen" class="auth-wrapper">
+        <div class="auth-card">
+            <img src="https://i.imgur.com/54kosOd.png" alt="Logo" class="auth-logo">
+            <h2>Admin Login</h2>
+            <p>Enter your credentials to access the panel</p>
+            <form id="admin-login-form">
+                <div class="input-box">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="admin-email" placeholder="Admin Email" required>
+                </div>
+                <div class="input-box">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="admin-password" placeholder="Password" required>
+                </div>
+                <button type="submit" id="btn-login" class="btn-primary">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="admin-dashboard" class="dashboard-wrapper hidden">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://i.imgur.com/5f45YD9.png" alt="Logo">
+                <h3>Admin Hub</h3>
+            </div>
+            <div class="stats-box">
+                <span>Total Users</span>
+                <h1 id="total-count">0</h1>
+            </div>
+            <button id="copy-all-emails" class="btn-action btn-copy-all">
+                <i class="fas fa-mail-bulk"></i> Copy All Emails
+            </button>
+            <button class="btn-logout" onclick="adminLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-info">
+                    <h1>User Applications Manager</h1>
+                    <p>Track, manage, and verify all team applicants.</p>
+                </div>
+                <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=150&q=80" alt="Tech Banner" class="banner-thumb">
+            </header>
+
+            <div id="loading-state" class="loader-box">
+                <div class="spinner"></div>
+                <p>Loading database records...</p>
+            </div>
+
+            <div id="users-grid" class="users-grid">
+                </div>
+        </main>
+    </div>
+
+    <script type="module" >
+        
+        import { app } from './firebase.js';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js";
+
+const auth = getAuth(app);
+const db = getDatabase(app);
+let emailList = [];
+
+// --- 🔐 Authentication State Handler ---
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('admin-dashboard').classList.remove('hidden');
+        fetchApplicants();
+    } else {
+        document.getElementById('login-screen').classList.remove('hidden');
+        document.getElementById('admin-dashboard').classList.add('hidden');
+    }
+});
+
+// --- 🔑 Login Handler ---
+const loginForm = document.getElementById('admin-login-form');
+loginForm.onsubmit = async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('admin-email').value.trim();
+    const pass = document.getElementById('admin-password').value;
+    const btn = document.getElementById('btn-login');
+
+    btn.disabled = true;
+    btn.innerText = "Signing in...";
+
+    try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        toast("Login successful", "success");
+    } catch (error) {
+        toast("Access denied: " + error.message, "error");
+        btn.disabled = false;
+        btn.innerText = "Sign In";
+    }
+};
+
+// --- 🌐 Fetch User Applications ---
+async function fetchApplicants() {
+    const grid = document.getElementById('users-grid');
+    const loading = document.getElementById('loading-state');
+
+    try {
+        const snapshot = await get(ref(db, 'applications'));
+        loading.style.display = 'none';
+
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            const uids = Object.keys(data);
+            document.getElementById('total-count').innerText = uids.length;
+
+            grid.innerHTML = '';
+            emailList = [];
+
+            uids.forEach(uid => {
+                const user = data[uid];
+                emailList.push(user.personalInfo.email);
+                renderCard(uid, user);
+            });
+        } else {
+            grid.innerHTML = '<p style="text-align:center; color:gray;">No applicants yet.</p>';
+        }
+    } catch (error) {
+        toast("Database load failed", "error");
+    }
+}
+
+// --- 📝 Render Component ---
+function renderCard(uid, user) {
+    const grid = document.getElementById('users-grid');
+    const card = document.createElement('div');
+    card.className = 'user-card';
+    card.id = `usr-${uid}`;
+
+    card.innerHTML = `
+        <div class="card-top">
+            <img src="${user.personalInfo.photoUrl}" class="card-img">
+            <div>
+                <h3>${user.personalInfo.fullName}</h3>
+                <span class="id-badge">${user.teamId}</span>
+            </div>
+        </div>
+        <div class="card-info">
+            <div class="data-item">
+                <label>Email</label>
+                <span>${user.personalInfo.email} <i class="fas fa-copy icon-copy" onclick="copyContent('${user.personalInfo.email}')"></i></span>
+            </div>
+            <div class="data-item">
+                <label>Password</label>
+                <span>${user.personalInfo.password} <i class="fas fa-copy icon-copy" onclick="copyContent('${user.personalInfo.password}')"></i></span>
+            </div>
+            <div class="data-item">
+                <label>Phone</label>
+                <span>${user.personalInfo.phone} <i class="fas fa-copy icon-copy" onclick="copyContent('${user.personalInfo.phone}')"></i></span>
+            </div>
+            <div class="data-item">
+                <label>Gender</label>
+                <span>${user.personalInfo.gender}</span>
+            </div>
+
+            <div class="accordian-box">
+                <details>
+                    <summary>View Form Answers</summary>
+                    <p><strong>Expertise:</strong> ${user.professional.expertise}</p>
+                    <p><strong>Education:</strong> ${user.professional.education}</p>
+                    <p><strong>Why Join:</strong> ${user.professional.whyJoin}</p>
+                    <p><strong>Created Something:</strong> ${user.professional.createdBefore}</p>
+                    <p><strong>Work Link:</strong> ${user.professional.workLink}</p>
+                    <p><strong>LGA/State:</strong> ${user.address.lga}, ${user.address.state}</p>
+                    <p><strong>Full Address:</strong> ${user.address.homeAddress}</p>
+                </details>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button class="btn-delete" onclick="dropUser('${uid}')">
+                <i class="fas fa-trash"></i> Delete Data
+            </button>
+        </div>
+    `;
+    grid.appendChild(card);
+}
+
+// --- ⚙️ Global Actions Window Objects ---
+window.copyContent = (text) => {
+    navigator.clipboard.writeText(text);
+    toast("Copied to clipboard!", "success");
+};
+
+window.dropUser = async (uid) => {
+    if (confirm("Permanently delete this user from database?")) {
+        try {
+            await remove(ref(db, 'applications/' + uid));
+            document.getElementById(`usr-${uid}`).remove();
+            toast("User data wiped successfully", "success");
+            const count = document.getElementById('total-count');
+            count.innerText = parseInt(count.innerText) - 1;
+        } catch (error) {
+            toast("Delete error", "error");
+        }
+    }
+};
+
+document.getElementById('copy-all-emails').onclick = () => {
+    if (emailList.length > 0) {
+        const textToCopy = emailList.join(', ');
+        navigator.clipboard.writeText(textToCopy);
+        toast("All user emails copied!", "success");
+    } else {
+        toast("No emails to copy", "error");
+    }
+};
+
+window.adminLogout = () => {
+    signOut(auth);
+};
+
+// --- 🔔 Toast Notify ---
+function toast(msg, type) {
+    const container = document.getElementById('notification-container');
+    const box = document.createElement('div');
+    box.className = 'toast';
+    box.style.backgroundColor = type === 'success' ? '#10b981' : '#ef4444';
+    box.innerText = msg;
+    container.appendChild(box);
+    setTimeout(() => box.remove(), 4000);
+}
+    </script>
+</body>
+</html>
