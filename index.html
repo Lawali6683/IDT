@@ -9,7 +9,7 @@
 
 <meta property="og:description" content="Intelligent Digital Technology (IDT) is a modern tech-driven platform focused on building smart digital solutions, innovative web applications, and powerful software systems. We empower individuals and businesses through technology, creativity, and advanced digital development." />
 
-<meta property="og:image" content="https://i.imgur.com/JkWLhkq.jpeg" />
+<meta property="og:image" content="https://i.imgur.com/cRR3dcC.png" />
 
 <meta property="og:type" content="website" />
 
@@ -324,49 +324,43 @@ Border-radius: 50%;
     </div>
 
     <script type="module">
-        import { app } from './firebase.js';
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js";
+import { app } from './firebase.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js";
 
 const auth = getAuth(app);
 const db = getDatabase(app);
 const IMGUR_CLIENT_ID = "5acf7eff9c91660";
 
-// --- 1. INITIAL SECURITY & YEAR CHECK ---
 const currentYear = new Date().getFullYear();
 const mainWrapper = document.getElementById('main-wrapper');
 const expiredScreen = document.getElementById('expired-screen');
 
-// If the year is past 2026, lock the form
 if (currentYear > 2026) {
     mainWrapper.classList.add('hidden');
     expiredScreen.classList.remove('hidden');
 }
 
-// If user already registered, send to dashboard
 if (localStorage.getItem('team_user_session')) {
     window.location.href = 'dashboard.html';
 }
 
-// --- 2. IMAGE UPLOAD PREVIEW LOGIC ---
 const imageInput = document.getElementById('userImage');
 const previewImg = document.getElementById('preview-img');
 const uploadBoxContent = document.querySelector('#image-preview');
 
 imageInput.addEventListener('change', function() {
     const file = this.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            previewImg.src = e.target.result;
-            previewImg.classList.remove('hidden');
-            uploadBoxContent.classList.add('hidden');
-        }
-        reader.readAsDataURL(file);
-    }
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        previewImg.src = e.target.result;
+        previewImg.classList.remove('hidden');
+        uploadBoxContent.classList.add('hidden');
+    };
+    reader.readAsDataURL(file);
 });
 
-// --- 3. CONDITIONAL FORM LOGIC (Yes/No) ---
 const radioCreated = document.getElementsByName('created_something');
 const logicYes = document.getElementById('logic-yes');
 const logicNo = document.getElementById('logic-no');
@@ -387,7 +381,6 @@ radioCreated.forEach(radio => {
     });
 });
 
-// --- 4. PUSH NOTIFICATION SYSTEM ---
 function notify(message, type) {
     const container = document.getElementById('notification-container');
     const toast = document.createElement('div');
@@ -395,15 +388,14 @@ function notify(message, type) {
     toast.style.backgroundColor = type === 'success' ? '#10b981' : '#ef4444';
     toast.innerText = message;
     container.appendChild(toast);
-    
     setTimeout(() => {
         toast.style.opacity = '0';
         setTimeout(() => toast.remove(), 500);
-    }, 4000);
+    }, 3000);
 }
 
-// --- 5. IMGUR UPLOAD FUNCTION ---
 async function uploadToImgur(file) {
+    if (!file) return "";
     const formData = new FormData();
     formData.append('image', file);
 
@@ -414,45 +406,45 @@ async function uploadToImgur(file) {
     });
 
     const data = await res.json();
-    if (!data.success) throw new Error("Image upload to Imgur failed!");
+    if (!data.success) throw new Error("Image upload failed");
     return data.data.link;
 }
 
-// --- 6. MAIN FORM SUBMISSION (A to Z) ---
 const form = document.getElementById('teams-form');
 const submitBtn = document.getElementById('btn-submit');
 
 form.onsubmit = async (e) => {
     e.preventDefault();
-    
-    // Disable button to prevent double submission
     submitBtn.disabled = true;
-    submitBtn.innerText = "Processing... Please wait";
+    submitBtn.innerText = "Processing...";
 
     try {
         const email = document.getElementById('email').value.trim();
         const fullName = document.getElementById('fullName').value.trim();
         const firstName = fullName.split(' ')[0] || "User";
-        
-        // Custom Password Generation: Firstname#77
-        const generatedPassword = `${firstName}#77`;
-        
-        // Unique ID Generation: TBD/12/XXXXXX
-        const randomNum = Math.floor(100000 + Math.random() * 900000);
-        const customId = `TBD/12/${randomNum}`;
+        const password = `${firstName}#77`;
+        const uidRand = Math.floor(100000 + Math.random() * 900000);
+        const customId = `TBD/12/${uidRand}`;
 
-        // Step A: Upload Image first
-        notify("Uploading profile picture...", "success");
+        let userCredential;
+
+        try {
+            userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        } catch (err) {
+            if (err.code === "auth/email-already-in-use") {
+                userCredential = await signInWithEmailAndPassword(auth, email, password);
+            } else {
+                throw err;
+            }
+        }
+
+        const uid = userCredential.user.uid;
+
+        notify("Uploading image...", "success");
         const file = imageInput.files[0];
         const uploadedImageUrl = await uploadToImgur(file);
 
-        // Step B: Create Firebase Auth Account
-        notify("Creating secure account...", "success");
-        const userCredential = await createUserWithEmailAndPassword(auth, email, generatedPassword);
-        const uid = userCredential.user.uid;
-
-        // Step C: Prepare Data Object
-        const finalData = {
+        const data = {
             userId: uid,
             teamId: customId,
             registrationDate: new Date().toISOString(),
@@ -461,7 +453,7 @@ form.onsubmit = async (e) => {
                 middleName: document.getElementById('middleName').value,
                 gender: document.getElementById('gender').value,
                 email: email,
-                password: generatedPassword, // Saved for user reference as requested
+                password: password,
                 phone: document.getElementById('phone').value,
                 whatsapp: document.getElementById('whatsapp').value,
                 photoUrl: uploadedImageUrl
@@ -495,28 +487,25 @@ form.onsubmit = async (e) => {
             }
         };
 
-        // Step D: Save to Realtime Database
-        notify("Saving application data...", "success");
-        await set(ref(db, 'applications/' + uid), finalData);
+        notify("Saving data...", "success");
+        await set(ref(db, 'users/' + uid), data);
 
-        // Step E: Set local session and Redirect
         localStorage.setItem('team_user_session', uid);
         localStorage.setItem('team_user_id', customId);
-        
-        notify("Application successful! Redirecting...", "success");
+
+        notify("Success! Redirecting...", "success");
 
         setTimeout(() => {
             window.location.href = 'dashboard.html';
-        }, 2000);
+        }, 1500);
 
     } catch (error) {
         console.error(error);
-        notify("Error: " + error.message, "error");
+        notify(error.message, "error");
         submitBtn.disabled = false;
         submitBtn.innerText = "Submit Application";
     }
 };
-        
-    </script>
+</script>
 </body>
 </html>
