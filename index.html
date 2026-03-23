@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -325,9 +323,9 @@ Border-radius: 50%;
         </div>
     </div>
 
-  <script type="module">
+    <script type="module">
 import { app } from './firebase.js';
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js";
 
 const auth = getAuth(app);
@@ -343,10 +341,10 @@ if (currentYear > 2026) {
     expiredScreen.classList.remove('hidden');
 }
 
-/* ❌ AN CIRE AUTO REDIRECT */
-/* ❌ AN CIRE localStorage CHECK */
+if (localStorage.getItem('team_user_session')) {
+    window.location.href = 'dashboard.html';
+}
 
-/* IMAGE PREVIEW */
 const imageInput = document.getElementById('userImage');
 const previewImg = document.getElementById('preview-img');
 const uploadBoxContent = document.querySelector('#image-preview');
@@ -363,7 +361,6 @@ imageInput.addEventListener('change', function() {
     reader.readAsDataURL(file);
 });
 
-/* LOGIC SHOW/HIDE */
 const radioCreated = document.getElementsByName('created_something');
 const logicYes = document.getElementById('logic-yes');
 const logicNo = document.getElementById('logic-no');
@@ -384,7 +381,6 @@ radioCreated.forEach(radio => {
     });
 });
 
-/* NOTIFICATION */
 function notify(message, type) {
     const container = document.getElementById('notification-container');
     const toast = document.createElement('div');
@@ -398,7 +394,6 @@ function notify(message, type) {
     }, 3000);
 }
 
-/* IMGUR UPLOAD */
 async function uploadToImgur(file) {
     if (!file) return "";
     const formData = new FormData();
@@ -415,7 +410,6 @@ async function uploadToImgur(file) {
     return data.data.link;
 }
 
-/* FORM SUBMIT */
 const form = document.getElementById('teams-form');
 const submitBtn = document.getElementById('btn-submit');
 
@@ -427,15 +421,23 @@ form.onsubmit = async (e) => {
     try {
         const email = document.getElementById('email').value.trim();
         const fullName = document.getElementById('fullName').value.trim();
-
-        /* 🔥 SIMPLE PASSWORD FOR TESTING */
-        const password = "12345678";
-
+        const firstName = fullName.split(' ')[0] || "User";
+        const password = `${firstName}@77`;
         const uidRand = Math.floor(100000 + Math.random() * 900000);
-        const customId = `TBD/12/${uidRand}`;
+        const customId = `IDT/12/${uidRand}`;
 
-        /* ✅ CREATE USER ONLY (NO AUTO LOGIN CONTROL) */
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        let userCredential;
+
+        try {
+            userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        } catch (err) {
+            if (err.code === "auth/email-already-in-use") {
+                userCredential = await signInWithEmailAndPassword(auth, email, password);
+            } else {
+                throw err;
+            }
+        }
+
         const uid = userCredential.user.uid;
 
         notify("Uploading image...", "success");
@@ -451,6 +453,7 @@ form.onsubmit = async (e) => {
                 middleName: document.getElementById('middleName').value,
                 gender: document.getElementById('gender').value,
                 email: email,
+                password: password,
                 phone: document.getElementById('phone').value,
                 whatsapp: document.getElementById('whatsapp').value,
                 photoUrl: uploadedImageUrl
@@ -473,29 +476,46 @@ form.onsubmit = async (e) => {
                 twitter: document.getElementById('tw_link').value || "N/A",
                 instagram: document.getElementById('ig_link').value || "N/A"
             },
-            agreements: {
-                aiTruth: document.querySelector('input[name="agr_ai_truth"]:checked')?.value || "No Selection",
-                aiUsage: document.querySelector('input[name="agr_ai_use"]:checked')?.value || "No Selection",
-                sharingIdeas: document.querySelector('input[name="agr_share"]:checked')?.value || "No Selection",
-                hardWork: document.querySelector('input[name="agr_hardwork"]:checked')?.value || "No Selection",
-                profitSharing: document.querySelector('input[name="agr_profit"]:checked')?.value || "No Selection",
-                deviceType: document.querySelector('input[name="device_type"]:checked')?.value || "No Selection",
-                videoEditing: document.querySelector('input[name="agr_video"]:checked')?.value || "No Selection"
-            }
+          
+
+agreements: {
+  
+    aiTruth: document.querySelector('input[name="agr_ai_truth"]:checked')?.value || "No Selection",
+
+    
+    
+    aiUsage: document.querySelector('input[name="agr_ai_use"]:checked')?.value || "No Selection",
+
+  
+    sharingIdeas: document.querySelector('input[name="agr_share"]:checked')?.value || "No Selection",
+
+    
+    hardWork: document.querySelector('input[name="agr_hardwork"]:checked')?.value || "No Selection",
+
+   
+    profitSharing: document.querySelector('input[name="agr_profit"]:checked')?.value || "No Selection",
+
+   
+    deviceType: document.querySelector('input[name="device_type"]:checked')?.value || "No Selection",
+
+    
+    videoEditing: document.querySelector('input[name="agr_video"]:checked')?.value || "No Selection"
+}
+
+
         };
 
         notify("Saving data...", "success");
         await set(ref(db, 'users/' + uid), data);
 
-        notify("Success! Data saved.", "success");
+        localStorage.setItem('team_user_session', uid);
+        localStorage.setItem('team_user_id', customId);
 
-        /* 🔥 RESET FORM FOR TESTING */
-        form.reset();
-        previewImg.classList.add('hidden');
-        uploadBoxContent.classList.remove('hidden');
+        notify("Success! Redirecting...", "success");
 
-        submitBtn.disabled = false;
-        submitBtn.innerText = "Submit Application";
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 1500);
 
     } catch (error) {
         console.error(error);
