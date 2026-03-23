@@ -94,6 +94,68 @@
             .sidebar { display: none; }
             .main-content { margin-left: 0; padding: 15px; }
         }
+        
+        
+        /* --- Gyaran Sidebar da Buttons don Mobile --- */
+@media (max-width: 600px) {
+    .sidebar {
+        display: flex !important; /* Maimakon 'none', yanzu zai fito */
+        position: relative;
+        width: 100%;
+        height: auto;
+        flex-direction: row; /* Zai jera su a kwance */
+        flex-wrap: wrap;
+        padding: 15px;
+        gap: 10px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .sidebar-header, .stats-card br {
+        display: none; /* Boye hoto da sunan Admin don samun sarari */
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .dashboard-container {
+        flex-direction: column; /* Saka Sidebar a sama, Content a kasa */
+    }
+
+    .stats-card {
+        margin: 0;
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 10px;
+    }
+
+    .stats-card h2 {
+        font-size: 1.2rem;
+        margin: 0;
+    }
+
+    .sidebar .btn {
+        width: auto; /* Buttons din ba za su cika ko'ina ba */
+        padding: 10px 15px;
+        font-size: 12px;
+    }
+
+    .btn-outline-danger {
+        margin-top: 0; /* Cire margin din da ke tura shi kasa */
+    }
+}
+
+/* Kara wannan don tabbatar da Sidebar tana da kyau a Desktop ma */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
     </style>
 </head>
 <body>
