@@ -3,295 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard | Teams AI</title>
+    <title>User Dashboard | Professional System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
+            --primary: #4f46e5;
             --sidebar: #0f172a;
-            --bg: #f1f5f9;
+            --bg: #f8fafc;
             --card: #ffffff;
             --text-dark: #1e293b;
             --text-light: #64748b;
             --border: #e2e8f0;
-            --accent: #10b981;
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-        }
-
-        body { 
-            background: var(--bg); 
-            color: var(--text-dark); 
-            overflow-x: hidden;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: var(--text-dark); }
         .hidden { display: none !important; }
 
-        .dashboard-wrapper { 
-            display: flex; 
-            min-height: 100vh; 
-        }
+        .dashboard-wrapper { display: flex; min-height: 100vh; }
 
         .sidebar { 
-            width: 280px; 
-            background: var(--sidebar); 
-            color: white; 
-            padding: 25px; 
-            display: flex; 
-            flex-direction: column; 
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            transition: all 0.3s ease;
+            width: 260px; background: var(--sidebar); color: white; padding: 30px 20px; 
+            display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; 
         }
 
-        .sidebar-header { 
-            text-align: center; 
-            padding-bottom: 30px; 
-            border-bottom: 1px solid rgba(255,255,255,0.1); 
-            margin-bottom: 30px;
-        }
-
-        .side-logo { 
-            width: 70px; 
-            height: 70px;
-            border-radius: 15px; 
-            margin-bottom: 15px;
-            object-fit: cover;
-            border: 2px solid var(--primary);
-        }
+        .sidebar-header { text-align: center; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+        .side-logo { width: 60px; border-radius: 50%; margin-bottom: 10px; border: 2px solid var(--primary); }
 
         .nav-links { list-style: none; }
-
         .nav-links li { 
-            padding: 14px 18px; 
-            cursor: pointer; 
-            border-radius: 12px; 
-            margin-bottom: 8px; 
-            transition: 0.3s; 
-            color: #94a3b8;
-            display: flex;
-            align-items: center;
-            font-weight: 500;
+            padding: 15px; cursor: pointer; border-radius: 12px; margin-bottom: 8px; 
+            transition: 0.3s; color: #94a3b8; display: flex; align-items: center;
         }
+        .nav-links li i { margin-right: 12px; width: 20px; text-align: center; }
+        .nav-links li:hover, .nav-links li.active { background: var(--primary); color: white; }
 
-        .nav-links li i { 
-            font-size: 1.2rem;
-            margin-right: 15px; 
-            width: 20px;
-            text-align: center;
-        }
-
-        .nav-links li:hover, .nav-links li.active { 
-            background: rgba(99, 102, 241, 0.1); 
-            color: var(--primary); 
-        }
-
-        .nav-links li.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
-
-        .main-body { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            width: 100%;
-        }
-
+        .main-body { flex: 1; display: flex; flex-direction: column; min-width: 0; }
         .top-bar { 
-            background: white; 
-            padding: 15px 30px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .user-id-badge {
-            background: #f8fafc;
-            padding: 8px 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            font-size: 0.9rem;
-        }
-
-        .top-user-info { display: flex; align-items: center; gap: 12px; }
-
-        .avatar-sm { 
-            width: 40px; 
-            height: 40px; 
-            border-radius: 10px; 
-            object-fit: cover;
-            background: #e2e8f0;
+            background: white; padding: 15px 30px; display: flex; justify-content: space-between; 
+            align-items: center; border-bottom: 1px solid var(--border); 
         }
 
         .content-area { padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; }
-
+        
         .welcome-banner { 
-            background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); 
-            color: white; 
-            padding: 40px; 
-            border-radius: 24px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 35px;
-            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+            background: linear-gradient(135deg, #4f46e5, #818cf8); color: white; 
+            padding: 40px; border-radius: 20px; display: flex; justify-content: space-between; 
+            align-items: center; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
         }
 
-        .welcome-text h1 { font-size: 2rem; margin-bottom: 10px; font-weight: 800; }
-        .welcome-text p { opacity: 0.9; font-size: 1.1rem; }
+        .dashboard-grid { display: grid; grid-template-columns: 350px 1fr; gap: 30px; }
+        .card { background: white; border-radius: 20px; padding: 25px; border: 1px solid var(--border); }
 
-        .dashboard-grid { 
-            display: grid; 
-            grid-template-columns: 350px 1fr; 
-            gap: 30px; 
-        }
+        .profile-header { text-align: center; margin-bottom: 25px; }
+        .large-avatar { width: 110px; height: 110px; border-radius: 50%; border: 4px solid #f1f5f9; object-fit: cover; margin-bottom: 15px; }
 
-        .card { 
-            background: white; 
-            border-radius: 20px; 
-            padding: 30px; 
-            border: 1px solid var(--border); 
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-        }
+        .security-box { background: #f1f5f9; padding: 15px; border-radius: 12px; margin-top: 20px; }
+        .info-label { font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; display: block; margin-bottom: 5px; }
+        .pass-container { display: flex; justify-content: space-between; align-items: center; background: white; padding: 10px; border-radius: 8px; border: 1px solid var(--border); }
 
-        .profile-header { text-align: center; margin-bottom: 30px; }
+        .details-section { display: flex; flex-direction: column; gap: 15px; }
+        .info-row { background: #fcfcfd; padding: 15px; border-radius: 12px; border: 1px solid var(--border); border-left: 4px solid var(--primary); }
+        .q-title { font-size: 12px; font-weight: 800; color: var(--text-light); margin-bottom: 5px; display: block; }
+        .a-text { font-size: 15px; color: var(--text-dark); font-weight: 500; line-height: 1.5; }
 
-        .large-avatar { 
-            width: 120px; 
-            height: 120px; 
-            border-radius: 30px; 
-            border: 5px solid #f8fafc; 
-            margin-bottom: 20px; 
-            object-fit: cover;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-        }
-
-        .profile-header h2 { font-size: 1.5rem; color: var(--text-dark); margin-bottom: 5px; }
-
-        .security-info { 
-            background: #f8fafc; 
-            padding: 20px; 
-            border-radius: 16px; 
-            border: 1px solid var(--border);
-        }
-
-        .info-item { margin-bottom: 20px; }
-        .info-item:last-child { margin-bottom: 0; }
-
-        .info-item label { 
-            font-size: 0.75rem; 
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 700; 
-            color: var(--text-light); 
-            display: block; 
-            margin-bottom: 8px; 
-        }
-
-        .pass-box { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: white;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            font-family: 'Monaco', monospace; 
-            font-size: 1rem; 
-            color: var(--primary-dark); 
-        }
-
-        .card-title { 
-            font-size: 1.25rem; 
-            font-weight: 700; 
-            margin-bottom: 25px; 
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .details-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
-            gap: 15px;
-        }
-
-        .q-row { 
-            padding: 20px; 
-            background: #ffffff; 
-            border-radius: 15px; 
-            border: 1px solid var(--border);
-            transition: 0.2s;
-        }
-
-        .q-row:hover { border-color: var(--primary); background: #fcfcff; }
-
-        .q-text { 
-            font-weight: 700; 
-            color: var(--text-light); 
-            font-size: 0.85rem;
-            display: block; 
-            margin-bottom: 10px; 
-            text-transform: uppercase;
-        }
-
-        .a-text { 
-            color: var(--text-dark); 
-            font-size: 1rem; 
-            line-height: 1.6;
-            font-weight: 500;
-        }
-
-        #loader {
-            position: fixed;
-            inset: 0;
-            background: var(--bg);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 6px solid #e2e8f0;
-            border-top: 6px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
-        }
-
+        #loader { position: fixed; inset: 0; background: white; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        @media (max-width: 1024px) {
+        @media (max-width: 900px) {
             .dashboard-grid { grid-template-columns: 1fr; }
-            .sidebar { width: 80px; padding: 20px 10px; }
-            .sidebar h3, .nav-links span { display: none; }
-            .nav-links li i { margin-right: 0; font-size: 1.4rem; }
-        }
-
-        @media (max-width: 640px) {
             .sidebar { display: none; }
-            .top-bar { padding: 15px; }
-            .welcome-banner { padding: 25px; flex-direction: column; text-align: center; gap: 20px; }
-            .welcome-banner img { width: 80px; }
-            .content-area { padding: 15px; }
-            .welcome-text h1 { font-size: 1.5rem; }
+            .welcome-banner { flex-direction: column; text-align: center; gap: 20px; }
         }
     </style>
 </head>
@@ -299,69 +83,66 @@
 
     <div id="loader">
         <div class="spinner"></div>
-        <p style="margin-top: 20px; font-weight: 600; color: var(--text-light);">Loading Dashboard...</p>
+        <p style="margin-top: 15px; color: var(--text-light); font-weight: 600;">Authenticating...</p>
     </div>
 
     <div class="dashboard-wrapper hidden" id="dashboard-content">
         <nav class="sidebar">
             <div class="sidebar-header">
-                <img src="https://i.imgur.com/54kosOd.png" alt="Logo" class="side-logo">
+                <img src="https://i.imgur.com/54kosOd.png" class="side-logo">
                 <h3>Teams AI</h3>
             </div>
             <ul class="nav-links">
-                <li class="active"><i class="fas fa-grid-2"></i> <span>Overview</span></li>
-                <li><i class="fas fa-user-circle"></i> <span>Profile</span></li>
-                <li onclick="logout()"><i class="fas fa-power-off"></i> <span>Logout</span></li>
+                <li class="active"><i class="fas fa-home"></i> Dashboard</li>
+                <li><i class="fas fa-user"></i> My Profile</li>
+                <li onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</li>
             </ul>
         </nav>
 
         <main class="main-body">
             <header class="top-bar">
-                <div class="user-id-badge">
-                    <span style="color: var(--text-light)">UID:</span> <strong id="display-custom-id">---</strong>
-                </div>
-                <div class="top-user-info">
-                    <span id="top-name" style="display: none;">User</span>
-                    <img src="" id="top-avatar" class="avatar-sm">
+                <div class="badge"><strong>System ID:</strong> <span id="top-id">---</span></div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span id="top-username" style="font-weight: 600;">User</span>
+                    <img src="" id="top-avatar" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; background: #eee;">
                 </div>
             </header>
 
             <div class="content-area">
                 <div class="welcome-banner">
-                    <div class="welcome-text">
-                        <h1>Sannu, <span id="user-first-name">Candidate</span>!</h1>
-                        <p>An yi nasarar adana bayanan ka a rumbun mu na zamani.</p>
+                    <div>
+                        <h1 style="font-size: 28px;">Welcome, <span id="first-name">User</span>!</h1>
+                        <p>Your professional application has been verified and stored.</p>
                     </div>
-                    <img src="https://i.imgur.com/54kosOd.png" style="width: 120px; filter: brightness(0) invert(1); opacity: 0.9;">
+                    <i class="fas fa-shield-check" style="font-size: 60px; opacity: 0.5;"></i>
                 </div>
 
                 <div class="dashboard-grid">
-                    <div class="card profile-card">
+                    <div class="card">
                         <div class="profile-header">
-                            <img src="" id="user-photo" class="large-avatar" onerror="this.src='https://ui-avatars.com/api/?name=User&background=6366f1&color=fff'">
-                            <h2 id="full-name">---</h2>
-                            <p id="user-email" style="color: var(--text-light)">---</p>
+                            <img src="" id="main-photo" class="large-avatar" onerror="this.src='https://ui-avatars.com/api/?name=User'">
+                            <h2 id="full-name">Loading...</h2>
+                            <p id="email-text" style="color: var(--text-light); font-size: 14px;"></p>
                         </div>
 
-                        <div class="security-info">
-                            <div class="info-item">
-                                <label>Password dinka</label>
-                                <div class="pass-box">
-                                    <span id="user-pass">••••••••</span>
-                                    <i class="fas fa-eye" id="toggle-pass" style="cursor: pointer; color: var(--text-light)"></i>
+                        <div class="security-box">
+                            <div style="margin-bottom: 15px;">
+                                <label class="info-label">Access Password</label>
+                                <div class="pass-container">
+                                    <span id="pass-field" style="font-weight: 700; color: var(--primary);">••••••••</span>
+                                    <i class="fas fa-eye" id="toggle-pass" style="cursor: pointer;"></i>
                                 </div>
                             </div>
-                            <div class="info-item">
-                                <label>Member ID</label>
-                                <span id="member-id" style="font-weight: 800; color: var(--primary-dark); font-size: 1.1rem;">---</span>
+                            <div>
+                                <label class="info-label">Registration ID</label>
+                                <span id="reg-id" style="font-weight: 800; font-size: 16px;">---</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card details-card">
-                        <h3 class="card-title"><i class="fas fa-clipboard-list" style="color: var(--primary)"></i> Cikakkun Bayani</h3>
-                        <div class="details-list" id="questions-container">
-                        </div>
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">Application Details</h3>
+                        <div class="details-section" id="data-container"></div>
                     </div>
                 </div>
             </div>
@@ -379,51 +160,55 @@
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 try {
-                    const snapshot = await get(ref(db, 'applications/' + user.uid));
+                    // GYARA: Mun koma users/ kamar yadda kake adanawa
+                    const snapshot = await get(ref(db, 'users/' + user.uid));
                     if (snapshot.exists()) {
-                        populateDashboard(snapshot.val());
+                        renderDashboard(snapshot.val());
                     } else {
-                        window.location.href = 'index.html';
+                        window.location.href = 'registration.html';
                     }
-                } catch (error) {
-                    console.error("Error:", error);
-                    document.getElementById('loader').innerHTML = "<p>Matsala ta samu yayin loda data.</p>";
+                } catch (err) {
+                    console.error(err);
+                    alert("Database Error: Could not fetch data.");
                 }
             } else {
                 window.location.href = 'login.html';
             }
         });
 
-        function populateDashboard(data) {
-            document.getElementById('display-custom-id').innerText = data.teamId || 'N/A';
-            document.getElementById('member-id').innerText = data.teamId || 'N/A';
+        function renderDashboard(data) {
+            document.getElementById('top-id').innerText = data.teamId;
+            document.getElementById('reg-id').innerText = data.teamId;
             document.getElementById('full-name').innerText = data.personalInfo.fullName;
-            document.getElementById('user-email').innerText = data.personalInfo.email;
+            document.getElementById('top-username').innerText = data.personalInfo.fullName;
+            document.getElementById('first-name').innerText = data.personalInfo.fullName.split(' ')[0];
+            document.getElementById('email-text').innerText = data.personalInfo.email;
             
-            const rawPass = data.personalInfo.password;
-            const passElem = document.getElementById('user-pass');
-            passElem.setAttribute('data-pass', rawPass);
-            
-            document.getElementById('user-first-name').innerText = data.personalInfo.fullName.split(' ')[0];
-            
+            const passField = document.getElementById('pass-field');
+            passField.setAttribute('data-real', data.personalInfo.password);
+
             const photo = data.personalInfo.photoUrl;
             document.getElementById('top-avatar').src = photo;
-            document.getElementById('user-photo').src = photo;
+            document.getElementById('main-photo').src = photo;
 
-            const questions = [
-                { q: "Me yasa kake son shiga wannan team din?", a: data.professional.whyJoin },
-                { q: "Matakin Karatu:", a: data.professional.education },
-                { q: "Kwarewa a fannin Tech:", a: data.professional.expertise },
-                { q: "Ka taba kera wani abu?", a: data.professional.createdBefore },
-                { q: "Sakamako/Planning:", a: data.professional.createdBefore === 'Yes' ? data.professional.workLink : data.professional.contributionPlan },
-                { q: "Nau'in Na'ura:", a: data.agreements.deviceType },
-                { q: "Address:", a: `${data.address.homeAddress}, ${data.address.lga}, ${data.address.state}.` }
+            const fields = [
+                { q: "Motivation", a: data.professional.whyJoin },
+                { q: "Education Background", a: data.professional.education },
+                { q: "Technical Expertise", a: data.professional.expertise },
+                { q: "Previous Projects", a: data.professional.createdBefore === 'Yes' ? data.professional.workLink : data.professional.contributionPlan },
+                { q: "Device Technology", a: data.agreements.deviceType },
+                { q: "Video Editing Skill", a: data.agreements.videoEditing },
+                { q: "Contact Phone", a: data.personalInfo.phone },
+                { q: "WhatsApp", a: data.personalInfo.whatsapp },
+                { q: "Current Address", a: `${data.address.homeAddress}, ${data.address.lga}, ${data.address.state} State.` },
+                { q: "Facebook Profile", a: data.socialMedia.facebook },
+                { q: "AI Usage Agreement", a: data.agreements.aiUsage }
             ];
 
-            document.getElementById('questions-container').innerHTML = questions.map(item => `
-                <div class="q-row">
-                    <span class="q-text">${item.q}</span>
-                    <p class="a-text">${item.a || 'Ba a bayar ba'}</p>
+            document.getElementById('data-container').innerHTML = fields.map(item => `
+                <div class="info-row">
+                    <span class="q-title">${item.q}</span>
+                    <p class="a-text">${item.a || 'Not Provided'}</p>
                 </div>
             `).join('');
 
@@ -432,11 +217,15 @@
         }
 
         document.getElementById('toggle-pass').onclick = function() {
-            const passSpan = document.getElementById('user-pass');
-            const isHidden = passSpan.innerText.includes('•');
-            passSpan.innerText = isHidden ? passSpan.getAttribute('data-pass') : '••••••••';
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
+            const field = document.getElementById('pass-field');
+            const realPass = field.getAttribute('data-real');
+            if (field.innerText === '••••••••') {
+                field.innerText = realPass;
+                this.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                field.innerText = '••••••••';
+                this.classList.replace('fa-eye-slash', 'fa-eye');
+            }
         };
 
         window.logout = function() {
