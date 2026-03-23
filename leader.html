@@ -3,128 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel | Team Management</title>
+    <title>Admin Panel | Creative Developing Company</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #4f46e5;
-            --primary-dark: #3730a3;
+            --primary-hover: #4338ca;
             --danger: #ef4444;
-            --success: #10b981;
-            --sidebar-bg: #0f172a;
-            --bg-body: #f1f5f9;
-            --card: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
+            --bg-light: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-dark: #111827;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --sidebar-width: 280px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background: var(--bg-body); color: var(--text-main); line-height: 1.5; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+        body { background: var(--bg-light); color: var(--text-dark); overflow-x: hidden; }
         .hidden { display: none !important; }
 
-        .auth-wrapper { height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--sidebar-bg); padding: 20px; }
-        .auth-card { background: var(--card); padding: 40px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); }
-        .auth-logo { width: 80px; margin-bottom: 20px; border-radius: 50%; }
-        .input-group { position: relative; margin-bottom: 20px; }
-        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
-        .input-group input { width: 100%; padding: 12px 15px 12px 45px; border: 1px solid #e2e8f0; border-radius: 10px; outline: none; transition: 0.3s; }
-        .input-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+        .auth-wrapper { height: 100vh; display: flex; align-items: center; justify-content: center; background: #1e293b; padding: 20px; }
+        .auth-card { background: var(--card-bg); padding: 40px; border-radius: 16px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .auth-logo { width: 90px; margin-bottom: 15px; border-radius: 50%; }
+        .input-box { display: flex; align-items: center; background: #f9fafb; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 15px; padding: 0 15px; }
+        .input-box i { color: var(--text-light); }
+        .input-box input { width: 100%; padding: 12px; border: none; background: transparent; outline: none; font-size: 15px; }
+        .btn-primary { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-primary:hover { background: var(--primary-hover); }
 
-        .dashboard-container { display: flex; min-height: 100vh; }
-        .sidebar { width: 280px; background: var(--sidebar-bg); color: white; padding: 30px 20px; position: fixed; height: 100vh; z-index: 100; transition: 0.3s; }
-        .main-content { flex: 1; margin-left: 280px; padding: 30px; }
+        .dashboard-wrapper { display: flex; min-height: 100vh; }
+        .sidebar { width: var(--sidebar-width); background: #0f172a; color: white; padding: 30px 20px; position: fixed; height: 100vh; display: flex; flex-direction: column; z-index: 1000; transition: 0.3s; }
+        .sidebar-header { text-align: center; margin-bottom: 35px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+        .sidebar-header img { width: 70px; border-radius: 50%; margin-bottom: 10px; }
+        .stats-box { background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 25px; }
+        .stats-box h1 { font-size: 32px; font-weight: 800; }
+        .btn-action { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; margin-bottom: 15px; background: var(--primary); color: white; }
+        .btn-logout { margin-top: auto; background: transparent; color: #ef4444; border: 1px solid #ef4444; width: 100%; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
-        .stats-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin: 20px 0; border: 1px solid rgba(255,255,255,0.1); }
-        .btn { border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; }
-        .btn-primary { background: var(--primary); color: white; padding: 12px; }
-        .btn-primary:hover { background: var(--primary-dark); }
-        .btn-outline-danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 10px; margin-top: auto; }
-        .btn-outline-danger:hover { background: var(--danger); color: white; }
-
-        .users-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 25px; margin-top: 30px; }
-        .user-card { background: var(--card); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
-        .card-header { padding: 20px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 15px; }
-        .user-avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+        .main-content { flex: 1; margin-left: var(--sidebar-width); padding: 40px; transition: 0.3s; }
+        .top-header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 30px; }
         
-        .card-body { padding: 20px; }
-        .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
-        .info-row label { color: var(--text-muted); font-weight: 600; }
-        .info-row span { color: var(--text-main); font-weight: 500; cursor: pointer; }
+        .users-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 25px; }
+        .user-card { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .card-top { padding: 20px; background: #fafafa; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 15px; border-radius: 16px 16px 0 0; }
+        .card-img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); }
+        .card-info { padding: 20px; }
+        .data-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; }
+        .data-item label { font-weight: 700; color: var(--text-light); }
         
-        details { margin-top: 15px; background: #f8fafc; border-radius: 10px; padding: 10px; }
-        summary { font-weight: 700; font-size: 13px; color: var(--primary); cursor: pointer; outline: none; }
-        .agreement-list { margin-top: 10px; font-size: 13px; }
-        .agreement-item { padding: 5px 0; border-bottom: 1px dashed #e2e8f0; }
-        .agreement-item b { display: block; color: var(--text-muted); font-size: 11px; }
+        .accordian-box { margin-top: 15px; background: #f8fafc; border-radius: 8px; padding: 10px; }
+        .accordian-box summary { font-weight: 800; font-size: 14px; color: var(--primary); cursor: pointer; padding: 5px; }
+        .q-row { margin: 10px 0; padding-bottom: 5px; border-bottom: 1px dashed #ddd; }
+        .q-row b { display: block; font-size: 12px; color: #64748b; }
+        .q-row p { font-size: 13px; font-weight: 600; color: #1e293b; }
 
-        .btn-delete { background: #fee2e2; color: var(--danger); padding: 8px; font-size: 13px; margin-top: 15px; }
-        .btn-delete:hover { background: var(--danger); color: white; }
+        .btn-delete { background: var(--danger); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 700; width: 100%; margin-top: 15px; }
 
-        #toast-box { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
-        .toast { padding: 15px 25px; border-radius: 12px; color: white; font-weight: 600; margin-top: 10px; animation: slideIn 0.3s ease; }
+        #notification-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+        .toast { padding: 15px 25px; border-radius: 8px; color: white; font-weight: 600; margin-bottom: 10px; animation: slideLeft 0.3s ease-out; }
 
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideLeft { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
-        @media (max-width: 992px) {
-            .sidebar { width: 80px; padding: 20px 10px; }
-            .sidebar h3, .sidebar span, .sidebar .btn span { display: none; }
-            .main-content { margin-left: 80px; }
-            .sidebar-header img { width: 40px; }
-        }
-
-        @media (max-width: 600px) {
-            .sidebar { display: none; }
-            .main-content { margin-left: 0; padding: 15px; }
+        @media (max-width: 768px) {
+            .sidebar { width: 0; padding: 0; overflow: hidden; }
+            .main-content { margin-left: 0; padding: 20px; }
+            .users-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
+    <div id="notification-container"></div>
 
-    <div id="toast-box"></div>
-
-    <div id="login-section" class="auth-wrapper">
+    <div id="login-screen" class="auth-wrapper">
         <div class="auth-card">
             <img src="https://i.imgur.com/54kosOd.png" class="auth-logo">
-            <h2 style="margin-bottom: 10px;">Admin Access</h2>
-            <form id="login-form">
-                <div class="input-group">
-                    <i class="fas fa-user-shield"></i>
-                    <input type="email" id="email" placeholder="Admin Email" required>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-key"></i>
-                    <input type="password" id="password" placeholder="Password" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Login to Dashboard</button>
+            <h2>Admin Login</h2>
+            <form id="admin-login-form">
+                <div class="input-box"><i class="fas fa-envelope"></i><input type="email" id="admin-email" placeholder="Email" required></div>
+                <div class="input-box"><i class="fas fa-lock"></i><input type="password" id="admin-password" placeholder="Password" required></div>
+                <button type="submit" id="btn-login" class="btn-primary">Sign In</button>
             </form>
         </div>
     </div>
 
-    <div id="dashboard-section" class="dashboard-container hidden">
+    <div id="admin-dashboard" class="dashboard-wrapper hidden">
         <aside class="sidebar">
-            <div class="sidebar-header" style="text-align: center;">
-                <img src="https://i.imgur.com/54kosOd.png" style="width: 60px; border-radius: 50%;">
+            <div class="sidebar-header">
+                <img src="https://i.imgur.com/54kosOd.png">
                 <h3>Admin Hub</h3>
             </div>
-            <div class="stats-card">
-                <span>Active Users</span>
-                <h2 id="user-count">0</h2>
-            </div>
-            <button id="copy-emails" class="btn btn-primary">
-                <i class="fas fa-copy"></i> <span>Copy All Emails</span>
-            </button>
-            <button onclick="logout()" class="btn btn-outline-danger">
-                <i class="fas fa-power-off"></i> <span>Logout</span>
-            </button>
+            <div class="stats-box"><span>Total Applicants</span><h1 id="total-count">0</h1></div>
+            <button id="copy-all-emails" class="btn-action"><i class="fas fa-mail-bulk"></i> Copy All Emails</button>
+            <button class="btn-logout" onclick="adminLogout()">Logout</button>
         </aside>
 
         <main class="main-content">
-            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                <h1>Applications Manager</h1>
+            <header class="top-header">
+                <div><h1>Applications Manager</h1><p>View all team form submissions below.</p></div>
+                <img src="https://i.imgur.com/54kosOd.png" style="width: 50px; border-radius: 50%;">
             </header>
-            <div id="loader" style="text-align: center; padding: 50px;">
-                <i class="fas fa-circle-notch fa-spin fa-2x" style="color: var(--primary);"></i>
-            </div>
+            <div id="loading-state" style="text-align:center; padding: 50px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading Data...</p></div>
             <div id="users-grid" class="users-grid"></div>
         </main>
     </div>
@@ -136,131 +114,118 @@
 
         const auth = getAuth(app);
         const db = getDatabase(app);
-        let allEmails = [];
+        let emailList = [];
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                document.getElementById('login-section').classList.add('hidden');
-                document.getElementById('dashboard-section').classList.remove('hidden');
-                loadData();
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('admin-dashboard').classList.remove('hidden');
+                fetchApplicants();
             } else {
-                document.getElementById('login-section').classList.remove('hidden');
-                document.getElementById('dashboard-section').classList.add('hidden');
+                document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('admin-dashboard').classList.add('hidden');
             }
         });
 
-        document.getElementById('login-form').onsubmit = async (e) => {
+        document.getElementById('admin-login-form').onsubmit = async (e) => {
             e.preventDefault();
+            const btn = document.getElementById('btn-login');
+            btn.disabled = true;
             try {
-                await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value);
-                showToast("Welcome Back Admin!", "success");
-            } catch (err) {
-                showToast("Error: " + err.message, "danger");
+                await signInWithEmailAndPassword(auth, document.getElementById('admin-email').value, document.getElementById('admin-password').value);
+                toast("Login Successful", "success");
+            } catch (error) {
+                toast("Error: " + error.message, "error");
+                btn.disabled = false;
             }
         };
 
-        function loadData() {
-            const userRef = ref(db, 'users');
-            onValue(userRef, (snapshot) => {
+        function fetchApplicants() {
+            const applicantsRef = ref(db, 'applications');
+            onValue(applicantsRef, (snapshot) => {
+                document.getElementById('loading-state').style.display = 'none';
                 const grid = document.getElementById('users-grid');
-                const loader = document.getElementById('loader');
-                loader.style.display = 'none';
                 grid.innerHTML = '';
-                allEmails = [];
-
+                emailList = [];
+                
                 if (snapshot.exists()) {
                     const data = snapshot.val();
-                    const keys = Object.keys(data);
-                    document.getElementById('user-count').innerText = keys.length;
-
-                    keys.forEach(id => {
-                        const user = data[id];
-                        allEmails.push(user.personalInfo.email);
-                        renderUserCard(id, user);
+                    const uids = Object.keys(data);
+                    document.getElementById('total-count').innerText = uids.length;
+                    uids.forEach(uid => {
+                        const user = data[uid];
+                        emailList.push(user.personalInfo.email);
+                        renderCard(uid, user);
                     });
                 } else {
-                    grid.innerHTML = '<p>No applications found.</p>';
-                    document.getElementById('user-count').innerText = "0";
+                    grid.innerHTML = '<p>No data found.</p>';
+                    document.getElementById('total-count').innerText = "0";
                 }
             });
         }
 
-        function renderUserCard(id, user) {
+        function renderCard(uid, user) {
             const grid = document.getElementById('users-grid');
-            const div = document.createElement('div');
-            div.className = 'user-card';
-            div.innerHTML = `
-                <div class="card-header">
-                    <img src="${user.personalInfo.photoUrl}" class="user-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${user.personalInfo.fullName}'">
-                    <div>
-                        <h4 style="font-size: 16px;">${user.personalInfo.fullName}</h4>
-                        <small style="color: var(--primary); font-weight: 800;">ID: ${user.teamId}</small>
-                    </div>
+            const card = document.createElement('div');
+            card.className = 'user-card';
+            card.innerHTML = `
+                <div class="card-top">
+                    <img src="${user.personalInfo.photoUrl}" class="card-img" onerror="this.src='https://ui-avatars.com/api/?name=${user.personalInfo.fullName}'">
+                    <div><h3>${user.personalInfo.fullName}</h3><span style="color:var(--primary); font-size:12px; font-weight:bold;">ID: ${user.teamId}</span></div>
                 </div>
-                <div class="card-body">
-                    <div class="info-row"><label>Email</label><span onclick="copyThis('${user.personalInfo.email}')">${user.personalInfo.email}</span></div>
-                    <div class="info-row"><label>Phone</label><span onclick="copyThis('${user.personalInfo.phone}')">${user.personalInfo.phone}</span></div>
-                    <div class="info-row"><label>Password</label><span>${user.personalInfo.password}</span></div>
-                    <div class="info-row"><label>Expertise</label><span>${user.professional.expertise}</span></div>
+                <div class="card-info">
+                    <div class="data-item"><label>Email</label><span>${user.personalInfo.email}</span></div>
+                    <div class="data-item"><label>Phone</label><span>${user.personalInfo.phone}</span></div>
+                    <div class="data-item"><label>State</label><span>${user.address.state}</span></div>
                     
-                    <details>
-                        <summary>Full Details & Agreements</summary>
-                        <div class="agreement-list">
-                            <div class="agreement-item"><b>AI Truth Agreement:</b> ${user.agreements.aiTruth}</div>
-                            <div class="agreement-item"><b>AI Usage Skill:</b> ${user.agreements.aiUsage}</div>
-                            <div class="agreement-item"><b>Sharing Ideas:</b> ${user.agreements.sharingIdeas}</div>
-                            <div class="agreement-item"><b>Hard Work:</b> ${user.agreements.hardWork}</div>
-                            <div class="agreement-item"><b>Profit Share:</b> ${user.agreements.profitSharing}</div>
-                            <div class="agreement-item"><b>Device:</b> ${user.agreements.deviceType}</div>
-                            <div class="agreement-item"><b>Video Editing:</b> ${user.agreements.videoEditing}</div>
-                            <div class="agreement-item"><b>Education:</b> ${user.professional.education}</div>
-                            <div class="agreement-item"><b>State/LGA:</b> ${user.address.state} / ${user.address.lga}</div>
-                        </div>
-                    </details>
+                    <div class="accordian-box">
+                        <details>
+                            <summary>Full Form & Agreements</summary>
+                            <div class="q-row"><b>Motivation:</b><p>${user.professional.whyJoin}</p></div>
+                            <div class="q-row"><b>Education:</b><p>${user.professional.education}</p></div>
+                            <div class="q-row"><b>Expertise:</b><p>${user.professional.expertise}</p></div>
+                            <div class="q-row"><b>Truth of AI:</b><p>${user.agreements.aiTruth}</p></div>
+                            <div class="q-row"><b>Effective Usage:</b><p>${user.agreements.aiUsage}</p></div>
+                            <div class="q-row"><b>Collaboration:</b><p>${user.agreements.sharingIdeas}</p></div>
+                            <div class="q-row"><b>Hard Work:</b><p>${user.agreements.hardWork}</p></div>
+                            <div class="q-row"><b>Profit Sharing:</b><p>${user.agreements.profitSharing}</p></div>
+                            <div class="q-row"><b>Device Type:</b><p>${user.agreements.deviceType}</p></div>
+                            <div class="q-row"><b>Video Editing:</b><p>${user.agreements.videoEditing}</p></div>
+                        </details>
+                    </div>
 
-                    <button class="btn btn-delete" onclick="deleteUser('${id}')">
-                        <i class="fas fa-trash-alt"></i> Delete User Forever
-                    </button>
+                    <button class="btn-delete" onclick="dropUser('${uid}')"><i class="fas fa-trash"></i> Delete User Forever</button>
                 </div>
             `;
-            grid.appendChild(div);
+            grid.appendChild(card);
         }
 
-        window.copyThis = (text) => {
-            navigator.clipboard.writeText(text);
-            showToast("Copied!", "success");
-        }
-
-        document.getElementById('copy-emails').onclick = () => {
-            if (allEmails.length > 0) {
-                navigator.clipboard.writeText(allEmails.join(', '));
-                showToast("All emails copied to clipboard!", "success");
-            } else {
-                showToast("No emails to copy", "danger");
-            }
-        };
-
-        window.deleteUser = async (id) => {
-            if (confirm("Gargaɗi: Wannan zai goge duka bayanan user ɗin nan daga database gaba ɗaya. Shin ka tabbata?")) {
+        window.dropUser = async (uid) => {
+            if (confirm("Are you sure Delete This Application file, ?")) {
                 try {
-                    await remove(ref(db, 'users/' + id));
-                    showToast("User deleted successfully", "success");
-                } catch (err) {
-                    showToast("Error deleting user", "danger");
-                }
+                    await remove(ref(db, 'applications/' + uid));
+                    toast("User deleted successfully", "success");
+                } catch (e) { toast("Error deleting", "error"); }
             }
         };
 
-        window.logout = () => signOut(auth);
+        document.getElementById('copy-all-emails').onclick = () => {
+            if (emailList.length > 0) {
+                navigator.clipboard.writeText(emailList.join(', '));
+                toast("All emails copied to clipboard!", "success");
+            } else { toast("No emails found", "error"); }
+        };
 
-        function showToast(msg, type) {
-            const box = document.getElementById('toast-box');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.style.background = type === 'success' ? 'var(--success)' : 'var(--danger)';
-            toast.innerText = msg;
-            box.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
+        window.adminLogout = () => signOut(auth);
+
+        function toast(msg, type) {
+            const container = document.getElementById('notification-container');
+            const box = document.createElement('div');
+            box.className = 'toast';
+            box.style.backgroundColor = type === 'success' ? '#10b981' : '#ef4444';
+            box.innerText = msg;
+            container.appendChild(box);
+            setTimeout(() => box.remove(), 4000);
         }
     </script>
 </body>
