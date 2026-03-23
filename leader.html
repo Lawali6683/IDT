@@ -96,15 +96,7 @@
         }
         
         
-        /* --- Modern Top Navigation Bar Styling --- */
-:root {
-    --nav-height: 80px;
-}
-
-.dashboard-container {
-    display: block; /* Cire flex na gefe */
-}
-
+       
 /* Mayar da Sidebar ta zama Top Navbar */
 .sidebar {
     width: 100% !important;
@@ -168,7 +160,7 @@
     white-space: nowrap;
 }
 
-/* Gyara Main Content domin Header ya zauna a sama */
+
 .main-content {
     margin-left: 0 !important;
     padding: 30px 40px !important;
@@ -225,36 +217,27 @@
         </div>
     </div>
 
-    <div id="dashboard-section" class="dashboard-container hidden">
-        <aside class="sidebar">
-            <div class="sidebar-header" style="text-align: center;">
-                <img src="https://i.imgur.com/54kosOd.png" style="width: 60px; border-radius: 50%;">
-                <h3 style="margin-top: 10px;">Admin Hub</h3>
-            </div>
-            
+    
            <aside class="sidebar">
     <div class="sidebar-header">
         <img src="https://i.imgur.com/54kosOd.png" style="width: 45px; border-radius: 50%;">
         <h3>Admin Hub</h3>
     </div>
+<div class="stats-card">
+                <i class="fas fa-users" style="color: var(--primary); margin-bottom: 5px;"></i>
+                <br><span>Total Users</span>
+                <h2 id="user-count">0</h2>
+            </div>
 
-    <div class="nav-actions">
-        <div class="stats-card">
-            <i class="fas fa-users" style="color: var(--primary);"></i>
-            <span>Users:</span>
-            <h2 id="user-count">0</h2>
-        </div>
+            <button id="copy-emails" class="btn btn-primary">
+                <i class="fas fa-copy"></i> <span>Copy All Emails</span>
+            </button>
 
-        <button id="copy-emails" class="btn btn-primary">
-            <i class="fas fa-copy"></i> <span>Copy Emails</span>
-        </button>
-
-        <button onclick="logout()" class="btn btn-outline-danger">
-            <i class="fas fa-power-off"></i> <span>Logout</span>
-        </button>
-    </div>
-</aside>
-
+            <button onclick="logout()" class="btn btn-outline-danger">
+                <i class="fas fa-power-off"></i> <span>Logout</span>
+            </button>
+        </aside>
+    
         <main class="main-content">
             <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px;">
                 <h1><i class="fas fa-tasks" style="color: var(--primary);"></i> Applications Manager</h1>
