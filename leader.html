@@ -96,66 +96,112 @@
         }
         
         
-        /* --- Gyaran Sidebar da Buttons don Mobile --- */
-@media (max-width: 600px) {
-    .sidebar {
-        display: flex !important; /* Maimakon 'none', yanzu zai fito */
-        position: relative;
-        width: 100%;
-        height: auto;
-        flex-direction: row; /* Zai jera su a kwance */
-        flex-wrap: wrap;
-        padding: 15px;
-        gap: 10px;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .sidebar-header, .stats-card br {
-        display: none; /* Boye hoto da sunan Admin don samun sarari */
-    }
-
-    .main-content {
-        margin-left: 0;
-        padding: 15px;
-    }
-
-    .dashboard-container {
-        flex-direction: column; /* Saka Sidebar a sama, Content a kasa */
-    }
-
-    .stats-card {
-        margin: 0;
-        padding: 10px 15px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        background: rgba(255,255,255,0.1);
-        border-radius: 10px;
-    }
-
-    .stats-card h2 {
-        font-size: 1.2rem;
-        margin: 0;
-    }
-
-    .sidebar .btn {
-        width: auto; /* Buttons din ba za su cika ko'ina ba */
-        padding: 10px 15px;
-        font-size: 12px;
-    }
-
-    .btn-outline-danger {
-        margin-top: 0; /* Cire margin din da ke tura shi kasa */
-    }
+        /* --- Modern Top Navigation Bar Styling --- */
+:root {
+    --nav-height: 80px;
 }
 
-/* Kara wannan don tabbatar da Sidebar tana da kyau a Desktop ma */
+.dashboard-container {
+    display: block; /* Cire flex na gefe */
+}
+
+/* Mayar da Sidebar ta zama Top Navbar */
 .sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    width: 100% !important;
+    height: var(--nav-height) !important;
+    position: sticky;
+    top: 0;
+    left: 0;
+    display: flex !important;
+    flex-direction: row !important; /* Jera su a kwance */
+    align-items: center;
+    justify-content: space-between; /* Raba su: Logo a hagu, Buttons a dama */
+    padding: 0 40px;
+    background: var(--sidebar-bg);
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-align: left !important;
+}
+
+.sidebar-header h3 {
+    font-size: 1.2rem;
+    color: white;
+}
+
+/* Bangaren Buttons (Stats, Copy, Logout) */
+.nav-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px; /* Sarari tsakanin button 1, 2, da 3 */
+}
+
+.stats-card {
+    margin: 0 !important;
+    padding: 8px 15px !important;
+    background: rgba(255,255,255,0.1) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 45px;
+}
+
+.stats-card h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--success);
+}
+
+.sidebar .btn {
+    width: auto !important; /* Kar su cika sarari */
+    height: 45px;
+    padding: 0 20px !important;
+    margin: 0 !important;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* Gyara Main Content domin Header ya zauna a sama */
+.main-content {
+    margin-left: 0 !important;
+    padding: 30px 40px !important;
+    max-width: 1400px;
+    margin: 0 auto !important;
+}
+
+/* --- Gyaran Mobile (Responsive) --- */
+@media (max-width: 850px) {
+    .sidebar {
+        height: auto !important;
+        flex-direction: column !important;
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .nav-actions {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .sidebar .btn, .stats-card {
+        flex: 1; /* Su yi daidai a waya */
+        min-width: 140px;
+    }
+
+    .sidebar-header h3 {
+        display: block !important;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -186,20 +232,28 @@
                 <h3 style="margin-top: 10px;">Admin Hub</h3>
             </div>
             
-            <div class="stats-card">
-                <i class="fas fa-users" style="color: var(--primary); margin-bottom: 5px;"></i>
-                <br><span>Total Users</span>
-                <h2 id="user-count">0</h2>
-            </div>
+           <aside class="sidebar">
+    <div class="sidebar-header">
+        <img src="https://i.imgur.com/54kosOd.png" style="width: 45px; border-radius: 50%;">
+        <h3>Admin Hub</h3>
+    </div>
 
-            <button id="copy-emails" class="btn btn-primary">
-                <i class="fas fa-copy"></i> <span>Copy All Emails</span>
-            </button>
+    <div class="nav-actions">
+        <div class="stats-card">
+            <i class="fas fa-users" style="color: var(--primary);"></i>
+            <span>Users:</span>
+            <h2 id="user-count">0</h2>
+        </div>
 
-            <button onclick="logout()" class="btn btn-outline-danger">
-                <i class="fas fa-power-off"></i> <span>Logout</span>
-            </button>
-        </aside>
+        <button id="copy-emails" class="btn btn-primary">
+            <i class="fas fa-copy"></i> <span>Copy Emails</span>
+        </button>
+
+        <button onclick="logout()" class="btn btn-outline-danger">
+            <i class="fas fa-power-off"></i> <span>Logout</span>
+        </button>
+    </div>
+</aside>
 
         <main class="main-content">
             <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px;">
