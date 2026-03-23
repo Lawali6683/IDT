@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard | Professional System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --sidebar: #0f172a;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: var(--text-dark); }
+        .hidden { display: none !important; }
+
+        .dashboard-wrapper { display: flex; min-height: 100vh; }
+
+        .sidebar { 
+            width: 260px; background: var(--sidebar); color: white; padding: 30px 20px; 
+            display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; 
+        }
+
+        .sidebar-header { text-align: center; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+        .side-logo { width: 60px; border-radius: 50%; margin-bottom: 10px; border: 2px solid var(--primary); }
+
+        .nav-links { list-style: none; }
+        .nav-links li { 
+            padding: 15px; cursor: pointer; border-radius: 12px; margin-bottom: 8px; 
+            transition: 0.3s; color: #94a3b8; display: flex; align-items: center;
+        }
+        .nav-links li i { margin-right: 12px; width: 20px; text-align: center; }
+        .nav-links li:hover, .nav-links li.active { background: var(--primary); color: white; }
+
+        .main-body { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+        .top-bar { 
+            background: white; padding: 15px 30px; display: flex; justify-content: space-between; 
+            align-items: center; border-bottom: 1px solid var(--border); 
+        }
+
+        .content-area { padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; }
+        
+        .welcome-banner { 
+            background: linear-gradient(135deg, #4f46e5, #818cf8); color: white; 
+            padding: 40px; border-radius: 20px; display: flex; justify-content: space-between; 
+            align-items: center; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
+        }
+
+        .dashboard-grid { display: grid; grid-template-columns: 350px 1fr; gap: 30px; }
+        .card { background: white; border-radius: 20px; padding: 25px; border: 1px solid var(--border); }
+
+        .profile-header { text-align: center; margin-bottom: 25px; }
+        .large-avatar { width: 110px; height: 110px; border-radius: 50%; border: 4px solid #f1f5f9; object-fit: cover; margin-bottom: 15px; }
+
+        .security-box { background: #f1f5f9; padding: 15px; border-radius: 12px; margin-top: 20px; }
+        .info-label { font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; display: block; margin-bottom: 5px; }
+        .pass-container { display: flex; justify-content: space-between; align-items: center; background: white; padding: 10px; border-radius: 8px; border: 1px solid var(--border); }
+
+        .details-section { display: flex; flex-direction: column; gap: 15px; }
+        .info-row { background: #fcfcfd; padding: 15px; border-radius: 12px; border: 1px solid var(--border); border-left: 4px solid var(--primary); }
+        .q-title { font-size: 12px; font-weight: 800; color: var(--text-light); margin-bottom: 5px; display: block; }
+        .a-text { font-size: 15px; color: var(--text-dark); font-weight: 500; line-height: 1.5; }
+
+        #loader { position: fixed; inset: 0; background: white; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 900px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .welcome-banner { flex-direction: column; text-align: center; gap: 20px; }
+        }
+        .details-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+}#<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Page title</title>
+</head>
+<body>
+    
+</body>
+</html>
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <p style="margin-top: 15px; color: var(--text-light); font-weight: 600;">Authenticating...</p>
+    </div>
+
+    <div class="dashboard-wrapper hidden" id="dashboard-content">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://i.imgur.com/54kosOd.png" class="side-logo">
+                <h3>Teams AI</h3>
+            </div>
+            <ul class="nav-links">
+                <li class="active"><i class="fas fa-home"></i> Dashboard</li>
+                <li><i class="fas fa-user"></i> My Profile</li>
+                <li onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</li>
+            </ul>
+        </nav>
+
+        <main class="main-body">
+            <header class="top-bar">
+                <div class="badge"><strong>System ID:</strong> <span id="top-id">---</span></div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span id="top-username" style="font-weight: 600;">User</span>
+                    <img src="" id="top-avatar" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; background: #eee;">
+                </div>
+            </header>
+
+            <div class="content-area">
+                <div class="welcome-banner">
+                    <div>
+                        <h1 style="font-size: 28px;">Welcome, <span id="first-name">User</span>!</h1>
+                        <p>Your professional application has been verified and stored.</p>
+                    </div>
+                    <i class="fas fa-shield-check" style="font-size: 60px; opacity: 0.5;"></i>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="profile-header">
+                            <img src="" id="main-photo" class="large-avatar" onerror="this.src='https://ui-avatars.com/api/?name=User'">
+                            <h2 id="full-name">Loading...</h2>
+                            <p id="email-text" style="color: var(--text-light); font-size: 14px;"></p>
+                        </div>
+
+                        <div class="security-box">
+                            <div style="margin-bottom: 15px;">
+                                <label class="info-label">Access Password</label>
+                                <div class="pass-container">
+                                    <span id="pass-field" style="font-weight: 700; color: var(--primary);">••••••••</span>
+                                    <i class="fas fa-eye" id="toggle-pass" style="cursor: pointer;"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="info-label">Registration ID</label>
+                                <span id="reg-id" style="font-weight: 800; font-size: 16px;">---</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">Application Details</h3>
+                        <div class="details-section" id="data-container"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { app } from './firebase.js';
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js";
+
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    // GYARA: Mun koma users/ kamar yadda kake adanawa
+                    const snapshot = await get(ref(db, 'users/' + user.uid));
+                    if (snapshot.exists()) {
+                        renderDashboard(snapshot.val());
+                    } else {
+                        window.location.href = 'registration.html';
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Database Error: Could not fetch data.");
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        function renderDashboard(data) {
+            document.getElementById('top-id').innerText = data.teamId;
+            document.getElementById('reg-id').innerText = data.teamId;
+            document.getElementById('full-name').innerText = data.personalInfo.fullName;
+            document.getElementById('top-username').innerText = data.personalInfo.fullName;
+            document.getElementById('first-name').innerText = data.personalInfo.fullName.split(' ')[0];
+            document.getElementById('email-text').innerText = data.personalInfo.email;
+            
+            const passField = document.getElementById('pass-field');
+            passField.setAttribute('data-real', data.personalInfo.password);
+
+            const photo = data.personalInfo.photoUrl;
+            document.getElementById('top-avatar').src = photo;
+            document.getElementById('main-photo').src = photo;
+
+           const fields = [
+    { q: "Motivation", a: data.professional.whyJoin },
+    { q: "Education Background", a: data.professional.education },
+    { q: "Technical Expertise", a: data.professional.expertise },
+    { q: "Previous Projects", a: data.professional.createdBefore === 'Yes' ? data.professional.workLink : data.professional.contributionPlan },
+    
+    // Sabbin sashin Agreements da muka kara
+    { q: "Agreement: Truth of AI", a: data.agreements.aiTruth },
+    { q: "Agreement: AI Effective Usage", a: data.agreements.aiUsage },
+    { q: "Agreement: Team Collaboration", a: data.agreements.sharingIdeas },
+    { q: "Agreement: Hard Work Commitment", a: data.agreements.hardWork },
+    { q: "Agreement: Profit Sharing System", a: data.agreements.profitSharing },
+    
+    // Sauran bayanan na'ura da kwarewa
+    { q: "Primary Device Type", a: data.agreements.deviceType },
+    { q: "Video Editing Skill", a: data.agreements.videoEditing },
+    
+    // Bayanan Sadarwa
+    { q: "Contact Phone", a: data.personalInfo.phone },
+    { q: "WhatsApp Number", a: data.personalInfo.whatsapp },
+    { q: "Current Address", a: `${data.address.homeAddress}, ${data.address.lga}, ${data.address.state} State.` },
+    
+    // Social Media
+    { q: "Facebook Profile", a: data.socialMedia.facebook },
+    { q: "Twitter (X) Profile", a: data.socialMedia.twitter },
+    { q: "Instagram Profile", a: data.socialMedia.instagram }
+];
+
+            document.getElementById('data-container').innerHTML = fields.map(item => `
+                <div class="info-row">
+                    <span class="q-title">${item.q}</span>
+                    <p class="a-text">${item.a || 'Not Provided'}</p>
+                </div>
+            `).join('');
+
+            document.getElementById('loader').classList.add('hidden');
+            document.getElementById('dashboard-content').classList.remove('hidden');
+        }
+
+        document.getElementById('toggle-pass').onclick = function() {
+            const field = document.getElementById('pass-field');
+            const realPass = field.getAttribute('data-real');
+            if (field.innerText === '••••••••') {
+                field.innerText = realPass;
+                this.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                field.innerText = '••••••••';
+                this.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        };
+
+        window.logout = function() {
+            signOut(auth).then(() => {
+                localStorage.clear();
+                window.location.href = 'login.html';
+            });
+        };
+    </script>
+</body>
+</html>
