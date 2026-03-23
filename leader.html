@@ -96,102 +96,60 @@
         }
         
         
-       
-/* Mayar da Sidebar ta zama Top Navbar */
-.sidebar {
-    width: 100% !important;
-    height: var(--nav-height) !important;
-    position: sticky;
-    top: 0;
-    left: 0;
-    display: flex !important;
-    flex-direction: row !important; /* Jera su a kwance */
-    align-items: center;
-    justify-content: space-between; /* Raba su: Logo a hagu, Buttons a dama */
-    padding: 0 40px;
-    background: var(--sidebar-bg);
-    z-index: 1000;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+/* Sabon tsarin Header na Sama */
+.sidebar { 
+    width: 100%; 
+    background: var(--sidebar-bg); 
+    color: white; 
+    padding: 10px 30px; 
+    position: sticky; 
+    top: 0; 
+    z-index: 1000; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 
-.sidebar-header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    text-align: left !important;
+.sidebar-header { display: flex; align-items: center; gap: 10px; }
+.sidebar-header h3 { font-size: 16px; }
+
+/* Jera Buttons 1 2 3 daga Hagu zuwa Dama */
+.nav-actions { 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
 }
 
-.sidebar-header h3 {
-    font-size: 1.2rem;
-    color: white;
+/* Rage girman stats card din don ya yi kyau a sama */
+.stats-card { 
+    background: rgba(255,255,255,0.1); 
+    padding: 5px 15px; 
+    border-radius: 8px; 
+    margin: 0; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.stats-card h2 { font-size: 18px; color: var(--success); margin: 0; }
+.stats-card span { font-size: 12px; }
+
+/* Daidaita girman buttons */
+.sidebar .btn { 
+    width: auto; 
+    padding: 8px 15px; 
+    font-size: 13px; 
 }
 
-/* Bangaren Buttons (Stats, Copy, Logout) */
-.nav-actions {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 20px; /* Sarari tsakanin button 1, 2, da 3 */
-}
+/* Main Content yanzu zai cika shafi */
+.main-content { padding: 30px; }
 
-.stats-card {
-    margin: 0 !important;
-    padding: 8px 15px !important;
-    background: rgba(255,255,255,0.1) !important;
-    border: 1px solid rgba(255,255,255,0.2) !important;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    height: 45px;
-}
-
-.stats-card h2 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: var(--success);
-}
-
-.sidebar .btn {
-    width: auto !important; /* Kar su cika sarari */
-    height: 45px;
-    padding: 0 20px !important;
-    margin: 0 !important;
-    font-size: 14px;
-    white-space: nowrap;
-}
-
-
-.main-content {
-    margin-left: 0 !important;
-    padding: 30px 40px !important;
-    max-width: 1400px;
-    margin: 0 auto !important;
-}
-
-/* --- Gyaran Mobile (Responsive) --- */
-@media (max-width: 850px) {
-    .sidebar {
-        height: auto !important;
-        flex-direction: column !important;
-        padding: 15px;
-        gap: 15px;
-    }
-    
-    .nav-actions {
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .sidebar .btn, .stats-card {
-        flex: 1; /* Su yi daidai a waya */
-        min-width: 140px;
-    }
-
-    .sidebar-header h3 {
-        display: block !important;
-    }
+/* Gyara don Wayar hannu (Mobile) */
+@media (max-width: 700px) {
+    .sidebar { flex-direction: column; height: auto; padding: 15px; gap: 10px; }
+    .nav-actions { flex-wrap: wrap; justify-content: center; }
+    .sidebar-header { display: none; } /* Boye logo a waya don samun sarari */
 }
 
     </style>
@@ -218,26 +176,30 @@
     </div>
 
     
-           <aside class="sidebar">
+        
+            <aside class="sidebar">
     <div class="sidebar-header">
-        <img src="https://i.imgur.com/54kosOd.png" style="width: 45px; border-radius: 50%;">
+        <img src="https://i.imgur.com/54kosOd.png" style="width: 40px; border-radius: 50%;">
         <h3>Admin Hub</h3>
     </div>
-<div class="stats-card">
-                <i class="fas fa-users" style="color: var(--primary); margin-bottom: 5px;"></i>
-                <br><span>Total Users</span>
-                <h2 id="user-count">0</h2>
-            </div>
 
-            <button id="copy-emails" class="btn btn-primary">
-                <i class="fas fa-copy"></i> <span>Copy All Emails</span>
-            </button>
+    <div class="nav-actions">
+        <div class="stats-card">
+            <i class="fas fa-users"></i>
+            <span>Users:</span>
+            <h2 id="user-count">0</h2>
+        </div>
 
-            <button onclick="logout()" class="btn btn-outline-danger">
-                <i class="fas fa-power-off"></i> <span>Logout</span>
-            </button>
-        </aside>
-    
+        <button id="copy-emails" class="btn btn-primary">
+            <i class="fas fa-copy"></i> <span>Copy Emails</span>
+        </button>
+
+        <button onclick="logout()" class="btn btn-outline-danger" style="margin: 0;">
+            <i class="fas fa-power-off"></i> <span>Logout</span>
+        </button>
+    </div>
+</aside>
+         
         <main class="main-content">
             <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px;">
                 <h1><i class="fas fa-tasks" style="color: var(--primary);"></i> Applications Manager</h1>
