@@ -22,7 +22,7 @@
 
         .hidden { display: none !important; }
         
-        /* Auth Section */
+       
         .auth-wrapper { height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--sidebar-bg); padding: 20px; }
         .auth-card { background: var(--card); padding: 40px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); }
         .auth-logo { width: 80px; margin-bottom: 20px; border-radius: 50%; }
@@ -95,8 +95,7 @@
             .main-content { margin-left: 0; padding: 15px; }
         }
         
-        
-/* Sabon tsarin Header na Sama */
+
 .sidebar { 
     width: 100%; 
     background: var(--sidebar-bg); 
@@ -114,14 +113,14 @@
 .sidebar-header { display: flex; align-items: center; gap: 10px; }
 .sidebar-header h3 { font-size: 16px; }
 
-/* Jera Buttons 1 2 3 daga Hagu zuwa Dama */
+
 .nav-actions { 
     display: flex; 
     align-items: center; 
     gap: 15px; 
 }
 
-/* Rage girman stats card din don ya yi kyau a sama */
+
 .stats-card { 
     background: rgba(255,255,255,0.1); 
     padding: 5px 15px; 
@@ -135,21 +134,94 @@
 .stats-card h2 { font-size: 18px; color: var(--success); margin: 0; }
 .stats-card span { font-size: 12px; }
 
-/* Daidaita girman buttons */
+
 .sidebar .btn { 
     width: auto; 
     padding: 8px 15px; 
     font-size: 13px; 
 }
 
-/* Main Content yanzu zai cika shafi */
+
 .main-content { padding: 30px; }
 
-/* Gyara don Wayar hannu (Mobile) */
+
 @media (max-width: 700px) {
     .sidebar { flex-direction: column; height: auto; padding: 15px; gap: 10px; }
     .nav-actions { flex-wrap: wrap; justify-content: center; }
-    .sidebar-header { display: none; } /* Boye logo a waya don samun sarari */
+    .sidebar-header { display: none; } 
+}
+
+
+
+.image-viewer-modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    cursor: zoom-out;
+}
+
+.image-viewer-modal img {
+    max-width: 90%;
+    max-height: 80%;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(255,255,255,0.2);
+    animation: zoomIn 0.3s ease;
+}
+
+.close-viewer {
+    position: absolute;
+    top: 20px; right: 30px;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.close-viewer:hover { color: var(--danger); }
+
+
+.verify-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.custom-checkbox {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--primary);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+    background: white;
+}
+
+.custom-checkbox i {
+    font-size: 14px;
+    color: white;
+    display: none;
+}
+
+.custom-checkbox.checked {
+    background: var(--success);
+    border-color: var(--success);
+}
+
+.custom-checkbox.checked i {
+    display: block;
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
     </style>
@@ -178,13 +250,13 @@
    
 
 <div id="dashboard-section" class="dashboard-container hidden">
-        <aside class="sidebar">
-            <div class="sidebar-header" style="text-align: center;">
-                <img src="https://i.imgur.com/54kosOd.png" style="width: 60px; border-radius: 50%;">
-                <h3 style="margin-top: 10px;">Admin Hub</h3>
-            </div>
-            
         
+            
+        <aside class="sidebar">
+    <div class="sidebar-header">
+        <img src="https://i.imgur.com/54kosOd.png" style="width: 40px; border-radius: 50%;">
+        <h3>Admin Hub</h3>
+    </div>
            
 
     <div class="nav-actions">
@@ -218,15 +290,20 @@
         </main>
     </div>
 
-    <script type="module">
+
+<div id="imageViewer" class="image-viewer-modal" onclick="closeImage()">
+    <span class="close-viewer">&times;</span>
+    <img id="fullImage" src="">
+</div>
+
+<script type="module">
         import { app } from './firebase.js';
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
         import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js";
-
         const auth = getAuth(app);
         const db = getDatabase(app);
-        let allEmails = [];
 
+        let allEmails = [];
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('login-section').classList.add('hidden');
@@ -256,12 +333,10 @@
                 loader.style.display = 'none';
                 grid.innerHTML = '';
                 allEmails = [];
-
                 if (snapshot.exists()) {
                     const data = snapshot.val();
                     const keys = Object.keys(data);
                     document.getElementById('user-count').innerText = keys.length;
-                    
                     keys.forEach(id => {
                         const user = data[id];
                         if(user.personalInfo?.email) allEmails.push(user.personalInfo.email);
@@ -279,21 +354,24 @@
             const div = document.createElement('div');
             div.className = 'user-card';
 
-            // Helper to format Boolean values into Tags
             const formatAgr = (val) => {
                 const isYes = val === "Yes" || val === true;
                 return `<span class="tag ${isYes ? 'tag-yes' : 'tag-no'}">${val}</span>`;
             };
 
+            // AN GYARA NAN: An cire kalmar 'const avatarHtml =' don ya zama HTML kai tsaye
             div.innerHTML = `
                 <div class="card-header">
-                    <img src="${user.personalInfo.photoUrl}" class="user-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${user.personalInfo.fullName}'">
+                    <img src="${user.personalInfo.photoUrl}" 
+                         class="user-avatar" 
+                         style="cursor: pointer" 
+                         onclick="viewImage('${user.personalInfo.photoUrl}')"
+                         onerror="this.src='https://ui-avatars.com/api/?name=${user.personalInfo.fullName}'">
                     <div>
                         <h4 style="font-size: 16px;">${user.personalInfo.fullName} ${user.personalInfo.middleName || ''}</h4>
                         <small style="color: var(--primary); font-weight: 800;"><i class="fas fa-id-badge"></i> ID: ${user.teamId}</small>
                     </div>
                 </div>
-
                 <div class="card-body">
                     <div class="info-row">
                         <label><i class="fas fa-envelope"></i> Email</label>
@@ -302,6 +380,14 @@
                             <button class="copy-btn" onclick="copyThis('${user.personalInfo.email}')"><i class="fas fa-copy"></i></button>
                         </span>
                     </div>
+
+                    <div class="verify-container">
+                        <div class="custom-checkbox" onclick="toggleCheck(this, '${id}')" id="check-${id}">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span style="font-size: 13px; font-weight: bold; color: var(--text-muted);">Verify Application</span>
+                    </div>
+
                     <div class="info-row">
                         <label><i class="fas fa-phone"></i> Phone</label>
                         <span>${user.personalInfo.phone}</span>
@@ -322,7 +408,6 @@
                     <details>
                         <summary><i class="fas fa-info-circle"></i> View Full Application</summary>
                         <div class="agreement-list">
-                            
                             <div class="section-title">Professional Background</div>
                             <div class="agreement-item"><b>Education Level:</b><p>${user.professional.education}</p></div>
                             <div class="agreement-item"><b>Created project before?</b><p>${user.professional.createdBefore}</p></div>
@@ -338,7 +423,7 @@
                             <div class="agreement-item"><b>Agree to profit-sharing system?</b><p>${formatAgr(user.agreements.profitSharing)}</p></div>
                             <div class="agreement-item"><b>Primary Device:</b><p><i class="fas fa-mobile-alt"></i> ${user.agreements.deviceType}</p></div>
                             <div class="agreement-item"><b>Can you edit videos for social media?</b><p>${formatAgr(user.agreements.videoEditing)}</p></div>
-
+                            
                             <div class="section-title">Contact & Socials</div>
                             <div class="agreement-item"><b>Location:</b><p>${user.address.state}, ${user.address.lga}</p></div>
                             <div class="agreement-item"><b>Home Address:</b><p>${user.address.homeAddress}</p></div>
@@ -385,6 +470,34 @@
             }
         };
 
+
+
+window.viewImage = (src) => {
+    const modal = document.getElementById("imageViewer");
+    const img = document.getElementById("fullImage");
+    img.src = src;
+    modal.style.display = "flex";
+};
+
+
+window.closeImage = () => {
+    document.getElementById("imageViewer").style.display = "none";
+};
+
+
+window.toggleCheck = (el, id) => {
+    el.classList.toggle("checked");
+
+    if (el.classList.contains("checked")) {
+        showToast("User Verified ✅", "success");
+    } else {
+        showToast("Verification Removed ❌", "danger");
+    }
+
+  
+};
+
+
         window.logout = () => signOut(auth);
 
         function showToast(msg, type) {
@@ -400,5 +513,5 @@
             }, 3000);
         }
     </script>
-</body>
+    </body >
 </html>
